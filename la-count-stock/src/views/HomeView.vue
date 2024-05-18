@@ -1,17 +1,21 @@
  
 <template>
   <main>
-   hello home
+{{ data }}
   </main>
 </template>
 <script setup>
   import { getApi } from '@/utils';
-import { onMounted } from 'vue';
+import { onMounted,ref } from 'vue';
+const data = ref([])
   onMounted (()=>{
     alert(222)
-    getApi("api/resource/Customer").then(r=>{
+    getApi("api/resource/Stock Reconciliation",{
+      fields:["name","set_warehouse"],
+      filters:[["docstatus", "=", 0]]
+    }).then(r=>{
       
-      console.log(r.data)
+      data.value = r.data
     })
   })
 </script>
