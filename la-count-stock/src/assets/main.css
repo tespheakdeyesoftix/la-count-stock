@@ -1,12 +1,4 @@
 @import './base.css';
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
-}
-
 a,
 .green {
   text-decoration: none;
@@ -25,11 +17,55 @@ a,
   body {
     display: flex;
     place-items: center;
+    justify-content: center;
+    position: relative;
   }
+}
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
+
+.main-section {
+  text-align: center;
+}
+.button-cus {
+  margin-top: 20px;
+  background: #4681f4;
+  border: 1px solid #fff;
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: #fff;
+  margin: 8px 0;
+  width: 90%;
+}
+.cart-item {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  display: flex;
+  background-color: #cccccc6c;
+  gap: 20px;
+}
+.qty-in-de {
+  display: flex;
+}
+.decrease-btn, .increase-btn {
+  background-color: transparent;
+  border-color: transparent;
+  width: 1rem;
+}
+.delete-btn {
+  background-color: transparent;
+}
+.qty-cus{
+  border: 1px solid #fff;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.qty-wrapper{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
