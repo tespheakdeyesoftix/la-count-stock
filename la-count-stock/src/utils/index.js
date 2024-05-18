@@ -1,6 +1,7 @@
 const apiUrl="http://192.168.10.41:1213/"
 const token = "f185af83e9c902a:44054fbd018e6f3"
 
+
 export function getApi(apiEndpoint, params = Object){
     return new Promise((resolve, reject)=>{
         
@@ -32,6 +33,7 @@ export function getApi(apiEndpoint, params = Object){
             resolve(r.json())
         })
         .catch((err)=>{
+            
             reject(err)
         })
 
@@ -50,10 +52,31 @@ export function postApi(apiEndpoint, params = Object){
             },
             body: JSON.stringify(params)
         })
-        .then(r => {
-            resolve(r.json())
-        })
-        .catch((err)=>{
+        .then(async response => {
+             
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    let server_message = (errorData._server_messages)
+                    if (server_message){
+                        server_message = JSON.parse(server_message)
+                        if (server_message){
+                            server_message.forEach(s => {
+                                 
+                                let message =  JSON.parse(s)
+                               window.postMessage({message:message.message})
+                                 
+                            });
+                        }
+                        console.log(server_message)
+                    }
+                    throw new Error(JSON.stringify( errorData));
+                  });
+            }
+            resolve (response.json())
+          })
+           
+          .catch(err => {
+        
             reject(err)
         })
 

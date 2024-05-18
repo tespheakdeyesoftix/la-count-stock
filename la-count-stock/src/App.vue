@@ -1,11 +1,8 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import ConfirmDialog from 'primevue/confirmdialog';
 
-</script>
 
 <template>
   <ConfirmDialog></ConfirmDialog>
+  <Toast />
   <header>
  
     <div class="wrapper">
@@ -15,7 +12,35 @@ import ConfirmDialog from 'primevue/confirmdialog';
 
 
 </template>
+<script setup>
+import { RouterLink, RouterView } from 'vue-router'
+import ConfirmDialog from 'primevue/confirmdialog';
+import {onMounted, onUnmounted} from "vue"
+import Toast from 'primevue/toast';
 
+import { useToast } from "primevue/usetoast";
+const toast = useToast();
+
+ 
+
+const actionClickHandler = async function (e) {
+
+  if (e.isTrusted ) {
+    if(e.data.message){
+      toast.add({ severity: 'error', summary: e.data.message, life: 3000 });
+    }
+  }
+}
+onUnmounted(() => {
+    window.removeEventListener('message', actionClickHandler, false);
+   
+})
+onMounted(() => { 
+     
+    window.addEventListener('message', actionClickHandler, false);
+})
+
+</script>
 <style scoped>
 header {
   line-height: 1.5;

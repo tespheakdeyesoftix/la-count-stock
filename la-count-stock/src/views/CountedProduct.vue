@@ -89,7 +89,7 @@ function saveEnter(e){
     e.preventDefault()
    }
 }
-function addItem(){
+async function  addItem(){
     if (stock_reconcil.value.items.length > 20){
             alert('Item can not more than 20. please submit.')
             return
@@ -102,7 +102,7 @@ function addItem(){
             barcode.value=''
         }else{
             loadingQty.value = true;
-            postApi("api/method/erpnext.stock.doctype.stock_reconciliation.stock_reconciliation.get_item_qty_from_warehouse",{
+            await postApi("api/method/erpnext.stock.doctype.stock_reconciliation.stock_reconciliation.get_item_qty_from_warehouse",{
             param:JSON.stringify({
                 warehouse:stock_reconcil.value.set_warehouse,
                 item_code:barcode.value.replace('!',''),
@@ -117,6 +117,9 @@ function addItem(){
                 localStorage.setItem('selected_warehouse',JSON.stringify(stock_reconcil.value))
                 barcode.value=''
                 loadingQty.value=false
+        }).catch(err=>{
+            barcode.value=''
+            loadingQty.value=false
         })
         }
 }
