@@ -11,6 +11,7 @@
                         <p>{{ d.item_name }}</p>
                         <p>{{ d.item_code }}</p>
                         <p>Qty on hand: {{ d.actual_qty }}</p>
+                        <p>{{ d.stock_uom }}</p>
                     </div>
                     <div>
                         <div class="qty-in-de">
