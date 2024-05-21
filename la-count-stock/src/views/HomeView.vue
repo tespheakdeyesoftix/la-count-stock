@@ -23,20 +23,25 @@
 <script setup>
   import router from '@/router';
 import { getApi } from '@/utils';
-import { onMounted,ref } from 'vue';
-const data = ref([])
+
+import { onMounted,ref,inject } from 'vue';
+const countProduct = inject('$countProduct')
+const data = ref([{'name':'MAT-RECO-2024-00171','set_warehouse':'BS01 - Watbo - LA'}])
+
   onMounted (()=>{
-    getApi("api/resource/Stock Reconciliation",{
-      fields:["name","set_warehouse"],
-      filters:[["docstatus", "=", 0]]
-    }).then(r=>{
+
+    // getApi("api/resource/Stock Reconciliation",{
+    //   fields:["name","set_warehouse"],
+    //   filters:[["docstatus", "=", 0]]
+    // }).then(r=>{
       
-      data.value = r.data
-    })
+    //   data.value = r.data
+    // })
   })
   function ReconcilationClick(d){
     d.items=[]
     localStorage.setItem('selected_warehouse',JSON.stringify(d))
+    countProduct.stockReconcil = d
     router.push({
               name: 'count-product'
             })

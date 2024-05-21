@@ -1,6 +1,7 @@
-const apiUrl="http://154.197.83.232:28565/"
+const apiUrl="https://edemopos.edoorfrontdesk.com/"
 // const token = "f185af83e9c902a:44054fbd018e6f3"
-const token = "efd0402becd8401:42e806ec6addead" //LA TOKEN
+// const token = "efd0402becd8401:42e806ec6addead" //LA TOKEN
+const token = "c7988962eef0dcc:1bc9483286a8571" //EPOS
 
 
 export function getApi(apiEndpoint, params = Object){
@@ -82,5 +83,15 @@ export function postApi(apiEndpoint, params = Object){
         })
 
     })
+}
+
+
+export default class CountProduct {
+    constructor() {   
+        this.stockReconcil={}
+    }
+
+    
+
 }
 

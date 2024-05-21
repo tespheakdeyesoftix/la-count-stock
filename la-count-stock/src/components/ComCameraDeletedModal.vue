@@ -4,20 +4,28 @@
         {{cameraList}}
         <p>Scan a barcode using your phone's camera:</p>
         <div>
+          selectedDeviceID={{selectedDeviceID}}
+          <Dropdown v-model="selectedDeviceID" :options="cameraList" optionLabel="name" optionValue="deviceID" placeholder="Select a Camera" class="w-full md:w-14rem" />
         <label for="cameraSelect">Select Camera:</label>
-        <select id="cameraSelect"></select>
-        <button id="startScanButton">Start Scan</button>
+       
         </div>
         <div id="barcodeResult"></div>
         <div id='video'></div>
+        <Button @click="startCamera">Start Scan</Button>
     </div>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted,inject,onUnmounted  } from 'vue';
+import ComUpdateProductQuantity from '@/components/ComUpdateProductQuantity.vue'
 import Dropdown from 'primevue/dropdown';
+import Button from 'primevue/button';
+import { getApi, postApi } from '@/utils';
+import { useDialog } from 'primevue/usedialog';
+const countProdct=inject("$countProduct")
+const dialog = useDialog();
 let cameraList = ref([]);
-let x= ref()
- 
+let loadingQty= ref()
+ const selectedDeviceID = ref(null)
 let activeStream = null; // Track the active camera stream
 onMounted(()=>{
     // Check if Barcode Detection API is supported by the browser
@@ -30,33 +38,22 @@ if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices || !navi
     const cameras = devices.filter(function(device) {
       return device.kind === 'videoinput';
     });
-
-    // Populate the camera select dropdown
-    const cameraSelect = document.getElementById('cameraSelect');
- 
     cameras.forEach(function(camera, index) {
-      const option = document.createElement('option');
-      option.value = camera.deviceId;
-      option.text = `Camera ${index + 1}`;
-      cameraSelect.appendChild(option);
-      cameraList.value.push(`Camera ${index + 1}`)
+    
+      cameraList.value.push({"deviceID":camera.deviceId,"name":`Camera ${index + 1}`})
     });
   })
   .catch(function(error) {
     console.error('Error enumerating devices:', error);
   });
 
-  // Start scan barcode button click event
-  document.getElementById('startScanButton').addEventListener('click', function() {
-    const selectedCameraId = document.getElementById('cameraSelect').value;
-    if (activeStream) {
-      stopCamera();
-    }
-    startBarcodeScanner(selectedCameraId);
-  });
 
-  // Function to start barcode scanner with the selected camera
-  function startBarcodeScanner(cameraId) {
+}
+
+ 
+
+})
+function startBarcodeScanner(cameraId) {
     // Access the selected camera
     navigator.mediaDevices.getUserMedia({ video: { deviceId: cameraId } })
     .then(function(stream) {
@@ -68,7 +65,7 @@ if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices || !navi
       video.setAttribute('autoplay', '');
       video.setAttribute('playsinline', '');
       video.srcObject = stream;
-      
+      document.querySelector('#video').textContent =""
       document.querySelector('#video').appendChild(video);
 
       // Load barcode detection model
@@ -93,7 +90,8 @@ if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices || !navi
             // Stop the camera feed
             stopCamera();
             // Alert the detected barcode
-            alert(`Detected Barcode: ${barcodes[0].rawValue}`);
+            // alert(`Detected Barcode: ${barcodes[0].rawValue}`);
+            searchProduct(barcodes[0].rawValue)
           } else {
             document.getElementById('barcodeResult').innerHTML = 'No barcode detected';
           }
@@ -112,14 +110,90 @@ if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices || !navi
     if (activeStream) {
       activeStream.getTracks().forEach(track => track.stop());
       activeStream = null;
-      
+      document.querySelector('#video').textContent =""
     }
   }
+function startCamera(){
+  if (!selectedDeviceID.value){
+    alert("Please select camera")
+    return
+  }
+    if (activeStream) {
+      stopCamera();
+    }
+    startBarcodeScanner(selectedDeviceID.value);
 }
-
- 
-
+onUnmounted(()=>{
+  stopCamera();
 })
+async function  searchProduct(barcode){
+  
+  
+  
+  if (countProdct.stockReconcil.items.filter((item) => item.item_code == barcode.replace('!', '')).length > 0) {
+    const exist_item = JSON.parse(JSON.stringify(countProdct.stockReconcil.items.find((item) => item.item_code == barcode.replace('!', ''))))
+        exist_item.qty = exist_item.qty + 1
+        exist_item.date = new Date()
+        
+        dialog.open(ComUpdateProductQuantity, {
+        data:{"product":exist_item}, 
+        props: {
+            header: 'Scan Product',
+            style: {
+                width: '100%',
+            },
+            breakpoints:{
+                '960px': '100%',
+                '640px': '100%'
+            },
+            modal: true,
+            
+        },
+        onClose: (opt) => {
+              startCamera()
+        }
+      });
+    
+    } else {
+        loadingQty.value = true;
+        
+       // await postApi("api/method/erpnext.stock.doctype.stock_reconciliation.stock_reconciliation.get_item_qty_from_warehouse", {
+
+        await postApi("api/method/epos_restaurant_2023.api.la_stock.get_item_qty_from_warehouse", {
+            param: JSON.stringify({
+                warehouse: countProdct.stockReconcil.set_warehouse,
+                item_code: barcode,
+                name: countProdct.stockReconcil.name
+            })
+        }).then(r => {
+            r.message.qty = r.message.qty + 1
+            r.message.date = new Date()
+            dialog.open(ComUpdateProductQuantity, {
+              data:{"product":r.message},
+            props: {
+                header: 'Scan Product',
+                style: {
+                    width: '100%',
+                },
+                breakpoints:{
+                    '960px': '100%',
+                    '640px': '100%'
+                },
+                modal: true,
+                
+                
+            },
+            onClose: (opt) => {
+              startCamera()
+        }
+          
+          });
+            loadingQty.value = false
+        }).catch(err => {
+            alert(err)
+            loadingQty.value = false
+        })
+}}
 
 </script>
 <style lang="">
