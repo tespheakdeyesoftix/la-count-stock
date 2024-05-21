@@ -1,5 +1,6 @@
-const apiUrl="http://192.168.10.41:1213/"
-const token = "f185af83e9c902a:44054fbd018e6f3"
+const apiUrl="http://154.197.83.232:28565/"
+// const token = "f185af83e9c902a:44054fbd018e6f3"
+const token = "efd0402becd8401:42e806ec6addead" //LA TOKEN
 
 
 export function getApi(apiEndpoint, params = Object){

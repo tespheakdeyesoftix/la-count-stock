@@ -41,7 +41,6 @@ a,
   border-radius: 10px;
   border: 1px solid #ccc;
   display: flex;
-  background-color: #cccccc6c;
   gap: 20px;
 }
 .qty-in-de {
@@ -56,7 +55,6 @@ a,
   background-color: transparent;
 }
 .qty-cus{
-  border: 1px solid #fff;
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
@@ -64,8 +62,26 @@ a,
   align-items: center;
   justify-content: center;
 }
+.qty-cus input{
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  text-align: center;}
 .qty-wrapper{
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.btn-footer-cus {
+  display: flex;
+  gap:10px;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  background-color: #fff;
+  justify-content: center;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }

@@ -3,6 +3,7 @@
 <template>
   <ConfirmDialog></ConfirmDialog>
   <Toast />
+  <DynamicDialog />
   <header>
  
     <div class="wrapper">
@@ -13,6 +14,7 @@
 
 </template>
 <script setup>
+import DynamicDialog from 'primevue/dynamicdialog';
 import { RouterLink, RouterView } from 'vue-router'
 import ConfirmDialog from 'primevue/confirmdialog';
 import {onMounted, onUnmounted} from "vue"
@@ -44,7 +46,7 @@ onMounted(() => {
 <style scoped>
 header {
   line-height: 1.5;
-  max-height: 100vh;
+  /* max-height: 100vh; */
 }
 
 .logo {
@@ -81,17 +83,11 @@ nav a:first-of-type {
   header {
     display: flex;
     place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+    /* padding-right: calc(var(--section-gap) / 2); */
   }
 
   .logo {
     margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
   }
 
   nav {

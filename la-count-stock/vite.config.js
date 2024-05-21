@@ -10,6 +10,9 @@ export default defineConfig({
     vue(),
     VueDevTools(),
   ],
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/stockcount/'
+    : '/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
