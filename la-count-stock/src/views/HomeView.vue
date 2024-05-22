@@ -19,6 +19,7 @@
       <p>There is no stock Reconciliation Number. Please open stock Reconciliation Number first.</p>
     </template>  
   </main>
+  <Button @click="test">Test</Button>
 </template>
 <script setup>
   import router from '@/router';
@@ -26,18 +27,19 @@ import { getApi } from '@/utils';
 
 import { onMounted,ref,inject } from 'vue';
 const countProduct = inject('$countProduct')
-const data = ref([{'name':'MAT-RECO-2024-00171','set_warehouse':'BS01 - Watbo - LA'}])
+const data = ref([])
 
   onMounted (()=>{
 
-    // getApi("api/resource/Stock Reconciliation",{
-    //   fields:["name","set_warehouse"],
-    //   filters:[["docstatus", "=", 0]]
-    // }).then(r=>{
-      
-    //   data.value = r.data
-    // })
+    getApi("api/method/epos_restaurant_2023.api.la_stock.get_pending_stock_count").then(r=>{
+      data.value = r.message
+    })
   })
+  function test(){
+    router.push({
+              name: 'test'
+            })
+  }
   function ReconcilationClick(d){
     d.items=[]
     localStorage.setItem('selected_warehouse',JSON.stringify(d))
