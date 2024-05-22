@@ -1,15 +1,13 @@
 <template lang="">
     <div style="height:100%">
         <div>
-          <div>
-        Selected DeviceID : 
-          </div>
+
         <div class="grid-container" >
         <Dropdown  style="width:100%" v-model="selectedDeviceID" :options="cameraList" optionLabel="name" optionValue="deviceID" placeholder="Select a Camera" class="w-full" />
         <Button  class="p-button" @click="startCamera">Scan</Button>
         </div>
         </div>
-        <div id="barcodeResult"></div>
+       
         <div id='video'></div>
         
       </div>
@@ -86,15 +84,12 @@ function startBarcodeScanner(cameraId) {
           // Display detected barcodes
           if (barcodes.length > 0) {
             barcodeDetected = true;
-            document.getElementById('barcodeResult').innerHTML = `Detected Barcode: ${barcodes[0].rawValue}`;
-            // Stop the camera feed
+              // Stop the camera feed
             stopCamera();
             // Alert the detected barcode
             // alert(`Detected Barcode: ${barcodes[0].rawValue}`);
             searchProduct(barcodes[0].rawValue)
-          } else {
-            document.getElementById('barcodeResult').innerHTML = 'No barcode detected';
-          }
+          }  
         } catch (error) {
           console.error('Barcode detection failed:', error);
         }
