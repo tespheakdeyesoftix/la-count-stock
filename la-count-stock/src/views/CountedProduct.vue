@@ -13,22 +13,25 @@
             <div style="display: flex;gap:5px;width: 100%;justify-content: space-between;">
                 <div class="cart-item" style="width: 100%;justify-content: space-between;">
                     <div>
-                        <p>{{ d.item_name }}</p>
-                        <p>{{ d.item_code }}</p>
-                        <p>Qty on hand: {{ d.actual_qty }}</p>
-                        <p>{{ d.stock_uom }}</p>
+                        <div>
+                            {{ d.item_name }}
+                        </div>
+                        <div>{{ d.item_code }}</div>
+                        <div>Qty on hand: {{ d.actual_qty }}</div>
+                        <div>{{ d.stock_uom }}</div>
                     </div>
                     <div>
                         <div class="qty-in-de">
                             <Button style="color: red;" class="decrease-btn" icon="pi pi-minus" @click="SubstractQty(d)"/>
                             <div class="qty-wrapper">
-                                <InputNumber v-model="d.qty" class="qty-cus"/>
+                                <InputNumber input-class="newinputnumber" v-model="d.qty" class="qty-cus"/>
                             </div>
                             <Button style="color: green;" class="increase-btn" icon="pi pi-plus" @click="addQty(d)"/>
                         </div>
                     </div>
+                    <Button class="delete-btn" style="color:red" icon="pi pi-trash" @click="deleteItem(d)"/>
                 </div>
-                <Button class="delete-btn" style="color:red" icon="pi pi-trash" @click="deleteItem(d)"/>
+              
             </div>
         </li>
     </ul>
@@ -241,6 +244,9 @@ function deleteItem(d) {
 }
 </script>
 <style scoped>
+.cart-item{
+ position: relative;
+}
 .OpenCamera {
  width: 100%;
  margin-top: 10px;
@@ -257,5 +263,22 @@ function deleteItem(d) {
 }
 ::v-deep .p-dialog-header{
 padding: 1px !important;
+}
+.delete-btn{
+    padding: 15px;
+    height: 20px;
+    width: 20px;
+    position:absolute;
+    right: 5px !important;
+    bottom: 5px;
+
+}
+.qty-cus {
+    font-size: 10px !important;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+ .newinputnumber{
+    font-size: 15px !important;
 }
 </style>

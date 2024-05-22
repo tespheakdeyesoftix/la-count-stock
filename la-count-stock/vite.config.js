@@ -11,7 +11,7 @@ export default defineConfig({
     VueDevTools(),
   ],
   publicPath: '/la-count-stock/',
-  base: '/la-count-stock/',
+  // base: '/la-count-stock/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
