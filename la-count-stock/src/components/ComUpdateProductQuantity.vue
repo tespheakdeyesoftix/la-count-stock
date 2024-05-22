@@ -1,8 +1,31 @@
 <template >
   <div>
-    {{product}}
+    <table>
+      <tr>
+      <th>
+         Product Name
+      </th>
+      <th>
+         QTY
+      </th>
+      <th>
+         Date
+      </th>  
+      </tr>
+      <tr>
+        <th>
+         {{ product.item_name }}
+        </th>
+        <th>
+          {{ product.qty }}
+        </th>
+        <th>
+          {{ product.date }}
+        </th>
+      </tr>
+    </table>
     <div class="product-qty-wrapper"><InputNumber v-model="product.qty" /></div>
-    <Button @click="save">Save</Button>
+    <Button class="p-button" @click="save">Save</Button>
   </div>
 </template>
 <script setup>
@@ -35,6 +58,13 @@
   }
 
 </script>
-<style >
-  
+<style scoped>
+  .p-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+  margin-top: 5px;
+}
 </style>
