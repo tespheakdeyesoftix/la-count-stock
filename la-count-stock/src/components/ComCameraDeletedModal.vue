@@ -4,7 +4,7 @@
         <div>
         <div class="grid-container" >
         <Dropdown v-if="!showdropdown"  style="width:100%" v-model="selectedDeviceID" :options="cameraList" optionLabel="name" optionValue="deviceID" placeholder="Select a Camera" class="w-full" />
-        <Button  class="p-button" @click="startCamera">Scan</Button>
+        <Button v-if="!showdropdown" class="p-button" @click="startCamera">Scan</Button>
         </div>
         </div>
         <div style="width:100%;">
@@ -113,7 +113,7 @@ function startBarcodeScanner(cameraId) {
     }
   }
 function startCamera(){
-  showdropdown.value = true;
+  
   if (!selectedDeviceID.value){
     alert("Please select camera")
     return
