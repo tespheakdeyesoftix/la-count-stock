@@ -4,6 +4,7 @@ import CountedProduct from '../views/CountedProduct.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  base: '/la-count-stock/',
   routes: [
     {
       path: '/',
