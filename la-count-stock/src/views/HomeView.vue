@@ -19,6 +19,7 @@
       <p>There is no stock Reconciliation Number. Please open stock Reconciliation Number first.</p>
     </template>  
   </main>
+  <Button @click="test">Test</Button>
 </template>
 <script setup>
   import router from '@/router';
@@ -34,6 +35,11 @@ const data = ref([])
       data.value = r.message
     })
   })
+  function test(){
+    router.push({
+              name: 'test'
+            })
+  }
   function ReconcilationClick(d){
     d.items=[]
     localStorage.setItem('selected_warehouse',JSON.stringify(d))

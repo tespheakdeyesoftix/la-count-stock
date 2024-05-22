@@ -9,7 +9,7 @@ import ConfirmationService from 'primevue/confirmationservice';
 import DialogService from 'primevue/dialogservice';
 import ToastService from 'primevue/toastservice';
 import CountProduct from './utils/index';
-
+ 
 const app = createApp(App)
 
 app.use(router)
@@ -17,6 +17,7 @@ app.use(PrimeVue);
 app.use(ConfirmationService);
 app.use(ToastService);
 app.use(DialogService);
+ 
 const countProduct = reactive(new CountProduct());
 app.provide("$countProduct", countProduct);
 app.mount('#app')

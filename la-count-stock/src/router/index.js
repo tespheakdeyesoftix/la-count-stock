@@ -1,9 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import CountedProduct from '../views/CountedProduct.vue'
+import test from '../views/test.vue'
 
 const router = createRouter({
   history: createWebHistory('/la-count-stock/'),
+  // history: createWebHistory('/'),
   routes: [
     {
       path: '/',
@@ -14,6 +16,11 @@ const router = createRouter({
       path: '/count-product',
       name: 'count-product',
       component: CountedProduct
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: test
     },
     
   ]
