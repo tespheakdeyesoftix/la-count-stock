@@ -104,12 +104,11 @@ function save(e) {
 function OpenCamera(){
     dialog.open(ComCameraDetectedModal, {
         props: {
-            header: 'Scan Product',
+            showHeader:false,
             style: {
                 width: '100%', 
                 height: '100vh',
                 margin: '0', 
-                padding: '0', 
             },
             breakpoints: {
                 '960px': '100vw', 
