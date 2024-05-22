@@ -3,17 +3,26 @@
       
         <div>
         <div class="grid-container" >
-        <Dropdown v-if="!showdropdown"  style="width:100%" v-model="selectedDeviceID" :options="cameraList" optionLabel="name" optionValue="deviceID" placeholder="Select a Camera" class="w-full" />
+        <Dropdown v-if="!showdropdown"  style="width:100%" v-model="selectedDevice" :options="availableDevices" optionLabel="label"   placeholder="Select a Camera" class="w-full" />
         <Button v-if="!showdropdown" class="p-button" @click="startCamera">Scan</Button>
         </div>
         </div>
+        
         <div style="width:100%;height:100%;overflow: hidden;">
-        <div id='video'></div>
+          <qrcode-stream
+          :constraints="constraints"
+          :track="trackFunctionSelected.value"
+          :formats="selectedBarcodeFormats"
+          @error="onError"
+          @detect="onDetect"
+          @camera-on="onCameraReady"
+          :paused="paused"
+        />
         </div>
       </div>
 </template>
 <script setup>
-import { ref, onMounted,inject,onUnmounted  } from 'vue';
+import { ref, onMounted,inject,onUnmounted,computed, pushScopeId  } from 'vue';
 import ComUpdateProductQuantity from '@/components/ComUpdateProductQuantity.vue'
 import Dropdown from 'primevue/dropdown';
 import Button from 'primevue/button';
@@ -25,33 +34,30 @@ let cameraList = ref([]);
 let loadingQty= ref()
  const selectedDeviceID = ref(null)
 let activeStream = null; // Track the active camera stream
-const showdropdown = ref()
-onMounted(()=>{
-    // Check if Barcode Detection API is supported by the browser
-if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices || !navigator.mediaDevices.getUserMedia) {
-  alert("Your browser doesn't support the Barcode Detection API");
-} else {
-  // Get the list of available video input devices (cameras)
-  var constraints = {video: true, audio: false};
-     navigator.mediaDevices.getUserMedia(constraints).then(stream => {
-  
-      navigator.mediaDevices.enumerateDevices().then(function(devices) {
-        const cameras = devices.filter(function(device) {
-          return device.kind === 'videoinput';
-        });
-        cameras.forEach(function(camera, index) {
-        
-          cameraList.value.push({"deviceID":camera.deviceId,"name":`Camera ${index + 1}`})
-        });
-      });
-
-
-    })
-  
+const showdropdown = ref() 
+import { QrcodeStream} from 'vue-qrcode-reader'
+    const result = ref('')
+    const paused = ref(false)
+function stop(){
+  paused.value = true
+}
+  function onDetect(detectedCodes) {
+     
+    
+    let barcode =(detectedCodes.map((code) => code.rawValue)[0]).trim()
+    if (barcode){
+      paused.value = true 
+      searchProduct(barcode);
+    }
+    
   }
- 
+  
+  /*** select camera ***/
+  
+  const selectedDevice = ref(null)
+  const availableDevices = ref(null)
+  
 
-})
 
 function startBarcodeScanner(cameraId) {
     showdropdown.value = true;
@@ -103,29 +109,100 @@ function startBarcodeScanner(cameraId) {
     });
   }
 
-  // Function to stop the camera feed
-  function stopCamera() {
-    showdropdown.value = false;
-    if (activeStream) {
-      activeStream.getTracks().forEach(track => track.stop());
-      activeStream = null;
-      document.querySelector('#video').textContent =""
-    }
-  }
-function startCamera(){
   
-  if (!selectedDeviceID.value){
-    alert("Please select camera")
-    return
+  async function onCameraReady() {
+    // NOTE: on iOS we can't invoke `enumerateDevices` before the user has given
+    // camera access permission. `QrcodeStream` internally takes care of
+    // requesting the permissions. The `camera-on` event should guarantee that this
+    // has happened.
+    availableDevices.value = (await navigator.mediaDevices.enumerateDevices()).filter(
+      ({ kind }) => kind === 'videoinput'
+    )
   }
-    if (activeStream) {
-      stopCamera();
+  
+  const constraints = computed(() => {
+    if (selectedDevice.value === null) {
+      return { facingMode: 'environment' }
+    } else {
+      return { deviceId: selectedDevice.value.deviceId }
     }
-    startBarcodeScanner(selectedDeviceID.value);
-}
+  })
+  
+  /*** track functons ***/
+ 
+  function paintBoundingBox(detectedCodes, ctx) {
+    for (const detectedCode of detectedCodes) {
+      const {
+        boundingBox: { x, y, width, height }
+      } = detectedCode
+  
+      ctx.lineWidth = 2
+      ctx.strokeStyle = '#007bff'
+      ctx.strokeRect(x, y, width, height)
+    }
+  } 
+ 
+  const trackFunctionSelected = ref({ text: 'bounding box', value: paintBoundingBox })
+  
+  /*** barcode formats ***/
+  
+  const barcodeFormats = ref({
+    aztec: true,
+    code_128: true,
+    code_39: true,
+    code_93: true,
+    codabar: true,
+    databar: true,
+    databar_expanded: true,
+    data_matrix: true,
+    dx_film_edge: true,
+    ean_13: true,
+    ean_8: true,
+    itf: true,
+    maxi_code: true,
+    micro_qr_code: true,
+    pdf417: true,
+    qr_code: true,
+    rm_qr_code: true,
+    upc_a: true,
+    upc_e: true,
+    linear_codes: true,
+    matrix_codes: true
+  })
+  const selectedBarcodeFormats = computed(() => {
+    return Object.keys(barcodeFormats.value).filter((format) => barcodeFormats.value[format])
+  })
+  
+  /*** error handling ***/
+  
+  const error = ref('')
+  
+  function onError(err) {
+    error.value = `[${err.name}]: `
+  
+    if (err.name === 'NotAllowedError') {
+      error.value += 'you need to grant camera access permission'
+    } else if (err.name === 'NotFoundError') {
+      error.value += 'no camera on this device'
+    } else if (err.name === 'NotSupportedError') {
+      error.value += 'secure context required (HTTPS, localhost)'
+    } else if (err.name === 'NotReadableError') {
+      error.value += 'is the camera already in use?'
+    } else if (err.name === 'OverconstrainedError') {
+      error.value += 'installed cameras are not suitable'
+    } else if (err.name === 'StreamApiNotSupportedError') {
+      error.value += 'Stream API is not supported in this browser'
+    } else if (err.name === 'InsecureContextError') {
+      error.value +=
+        'Camera access is only permitted in secure context. Use HTTPS or localhost rather than HTTP.'
+    } else {
+      error.value += err.message
+    }
+  }
+ 
 onUnmounted(()=>{
-  stopCamera();
-})
+  
+}) 
 async function  searchProduct(barcode){
   
   
@@ -150,7 +227,7 @@ async function  searchProduct(barcode){
             
         },
         onClose: (opt) => {
-              startCamera()
+          paused.value = false
         }
       });
     
@@ -184,13 +261,13 @@ async function  searchProduct(barcode){
                 
             },
             onClose: (opt) => {
-              startCamera()
+              paused.value = false
         }
           
           });
             loadingQty.value = false
         }).catch(err => {
-            alert(err)
+          paused.value = false
             loadingQty.value = false
         })
 }}

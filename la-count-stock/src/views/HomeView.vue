@@ -19,7 +19,7 @@
       <p>There is no stock Reconciliation Number. Please open stock Reconciliation Number first.</p>
     </template>  
   </main>
-  <Button @click="test">Test</Button>
+ 
 </template>
 <script setup>
   import router from '@/router';
