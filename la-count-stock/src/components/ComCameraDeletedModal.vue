@@ -1,19 +1,15 @@
 <template lang="">
     <div  style="margin-top:5px">
-      <div style="display:flex;justify-content: space-between;margin-bottom: 5px;">
-          <div>
-          </div>
-          <div @click="closeDialog()">
-            x
-          </div>
-      </div>
+      
         <div>
         <div class="grid-container" >
         <Dropdown  style="width:100%" v-model="selectedDeviceID" :options="cameraList" optionLabel="name" optionValue="deviceID" placeholder="Select a Camera" class="w-full" />
         <Button  class="p-button" @click="startCamera">Scan</Button>
         </div>
         </div>
+        <div style="width:100%;">
         <div id='video'></div>
+        </div>
       </div>
 </template>
 <script setup>
@@ -29,9 +25,7 @@ let cameraList = ref([]);
 let loadingQty= ref()
  const selectedDeviceID = ref(null)
 let activeStream = null; // Track the active camera stream
-const closeDialog = () => {
-  dialog.value.close();
-}
+
 onMounted(()=>{
     // Check if Barcode Detection API is supported by the browser
 if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices || !navigator.mediaDevices.getUserMedia) {

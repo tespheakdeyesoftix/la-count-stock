@@ -104,7 +104,6 @@ function save(e) {
 function OpenCamera(){
     dialog.open(ComCameraDetectedModal, {
         props: {
-            showHeader:false,
             style: {
                 width: '100%', 
                 height: '100vh',
