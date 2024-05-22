@@ -3,7 +3,7 @@
       
         <div>
         <div class="grid-container" >
-        <Dropdown  style="width:100%" v-model="selectedDeviceID" :options="cameraList" optionLabel="name" optionValue="deviceID" placeholder="Select a Camera" class="w-full" />
+        <Dropdown v-if="!showdropdown"  style="width:100%" v-model="selectedDeviceID" :options="cameraList" optionLabel="name" optionValue="deviceID" placeholder="Select a Camera" class="w-full" />
         <Button  class="p-button" @click="startCamera">Scan</Button>
         </div>
         </div>
@@ -25,7 +25,7 @@ let cameraList = ref([]);
 let loadingQty= ref()
  const selectedDeviceID = ref(null)
 let activeStream = null; // Track the active camera stream
-
+const showdropdown = ref()
 onMounted(()=>{
     // Check if Barcode Detection API is supported by the browser
 if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices || !navigator.mediaDevices.getUserMedia) {
@@ -53,6 +53,7 @@ if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices || !navi
 
 })
 function startBarcodeScanner(cameraId) {
+    showdropdown.value = true;
     // Access the selected camera
     navigator.mediaDevices.getUserMedia({ video: { deviceId: cameraId } })
     .then(function(stream) {
@@ -103,6 +104,7 @@ function startBarcodeScanner(cameraId) {
 
   // Function to stop the camera feed
   function stopCamera() {
+    showdropdown.value = false;
     if (activeStream) {
       activeStream.getTracks().forEach(track => track.stop());
       activeStream = null;
@@ -110,6 +112,7 @@ function startBarcodeScanner(cameraId) {
     }
   }
 function startCamera(){
+  showdropdown.value = true;
   if (!selectedDeviceID.value){
     alert("Please select camera")
     return

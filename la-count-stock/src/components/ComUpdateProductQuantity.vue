@@ -6,25 +6,27 @@
          Product Name
       </th>
       <th>
-         QTY
+        {{ product.item_name }}
       </th>
-      <th>
-         Date
-      </th>  
       </tr>
       <tr>
         <th>
-         {{ product.item_name }}
+         QTY
         </th>
         <th>
           {{ product.qty }}
+        </th>
+      </tr>
+      <tr>
+        <th>
+          Date
         </th>
         <th>
           {{ product.date }}
         </th>
       </tr>
     </table>
-    <div class="product-qty-wrapper"><InputNumber v-model="product.qty" /></div>
+    <div class="product-qty-wrapper" style="margin-top: 10px;"><InputNumber v-model="product.qty" /></div>
     <Button class="p-button" @click="save">Save</Button>
   </div>
 </template>
@@ -66,5 +68,10 @@
   width: 100%;
   text-align: center;
   margin-top: 5px;
+}
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding:3px;
 }
 </style>
