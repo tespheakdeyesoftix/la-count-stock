@@ -1,18 +1,18 @@
 <template lang="">
-    <div style="height:70vh">
-        <h1>Barcode Scanner</h1>
-        {{cameraList}}
-        <p>Scan a barcode using your phone's camera:</p>
+    <div style="height:100%">
         <div>
-          selectedDeviceID={{selectedDeviceID}}
-          <Dropdown v-model="selectedDeviceID" :options="cameraList" optionLabel="name" optionValue="deviceID" placeholder="Select a Camera" class="w-full md:w-14rem" />
-        <label for="cameraSelect">Select Camera:</label>
-       
+          <div>
+        Selected DeviceID : 
+          </div>
+        <div class="grid-container" >
+        <Dropdown  style="width:100%" v-model="selectedDeviceID" :options="cameraList" optionLabel="name" optionValue="deviceID" placeholder="Select a Camera" class="w-full" />
+        <Button  class="p-button" @click="startCamera">Scan</Button>
+        </div>
         </div>
         <div id="barcodeResult"></div>
         <div id='video'></div>
-        <Button @click="startCamera">Start Scan</Button>
-    </div>
+        
+      </div>
 </template>
 <script setup>
 import { ref, onMounted,inject,onUnmounted  } from 'vue';
@@ -196,6 +196,41 @@ async function  searchProduct(barcode){
 }}
 
 </script>
-<style lang="">
-    
+<style scoped>
+    .grid-container {
+  display: grid;
+  grid-template-columns: 80% 20%;
+  gap: 10px;
+}
+    .styled-hr {
+  border: 0;
+  height: 1px; 
+  background-color: rgb(164, 163, 163); 
+  margin-top: 10px; 
+  margin-bottom: 10px; 
+}
+.cameralist{
+  padding: 10px;
+  display: flex;
+  background-color: rgb(255, 255, 255);
+  border-radius: 10px;
+  align-items: center;
+ 
+}
+.icon-cam{
+  background-color: aliceblue;
+  border-radius: 10px;
+  padding: 20px 20px 15px 20px;
+  margin-right: 10px;
+}
+.p-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+}
+::v-deep .p-dialog-header{
+padding: 1px !important;
+}
 </style>

@@ -1,8 +1,12 @@
 <template>
   <div style="margin: 10px;"> 
     <div style="text-align: center;">{{ countProduct.stockReconcil.name }} <br/> {{ countProduct.stockReconcil.set_warehouse }}</div>
-    <InputText style="width: 100%;" ref="barcodeInput" placeholder="Enter or Scan QR Code" type="text" v-model="barcode" @keyup="save" @keyup.enter="saveEnter"/>
-    <Button @click="OpenCamera">Scan Camera</Button>
+   <div class="">
+        <div style="margin-top:10px;"> <InputText style="width: 100%;" ref="barcodeInput" placeholder="Enter or Scan QR Code" type="text" v-model="barcode" @keyup="save" @keyup.enter="saveEnter"/></div>
+        <div class="OpenCamera"> <Button @click="OpenCamera" class="p-button">Scan Camera</Button> </div>
+   </div>
+   
+    
     <br/>
     <ul v-if="countProduct.stockReconcil" style="list-style-type: none;padding-left: 0;padding-top:10px;width: 100%;">
         <li v-for="d in countProduct.stockReconcil.items?.sort((a, b) => new Date(b.date) - new Date(a.date))" style="margin-bottom: 8px;">
@@ -102,11 +106,17 @@ function OpenCamera(){
         props: {
             header: 'Scan Product',
             style: {
-                width: '100%',
+                width: '100%', 
+                height: '100vh',
+                margin: '0', 
+                padding: '0', 
             },
-            breakpoints:{
-                '960px': '100%',
-                '640px': '100%'
+            breakpoints: {
+                '960px': '100vw', 
+                '640px': '100vw'  
+            },
+            contentStyle:{
+padding:'0px 15px 0px 5px'
             },
             modal: true
         }});
@@ -231,3 +241,22 @@ function deleteItem(d) {
 
 }
 </script>
+<style scoped>
+.OpenCamera {
+ width: 100%;
+ margin-top: 10px;
+}
+.p-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+}
+.p-dialog-header{
+    padding: 1px !important;    
+}
+::v-deep .p-dialog-header{
+padding: 1px !important;
+}
+</style>
