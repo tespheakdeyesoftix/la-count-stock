@@ -7,7 +7,7 @@
         <Button v-if="!showdropdown" class="p-button" @click="startCamera">Scan</Button>
         </div>
         </div>
-        <div style="width:100%;height:100%;overflow: hidden;">
+        <div style="width:100%;height:80%;overflow: hidden;margin-top:-30px">
         <div id='video'></div>
         </div>
       </div>

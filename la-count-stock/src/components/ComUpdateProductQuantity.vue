@@ -26,7 +26,7 @@
         </th>
       </tr>
     </table>
-    <div class="product-qty-wrapper" style="margin-top: 10px;"><InputNumber v-model="product.qty" /></div>
+    <div class="product-qty-wrapper" style="margin-top: 10px;width: 100%;"><InputNumber v-model="product.qty" /></div>
     <Button class="p-button" @click="save">Save</Button>
   </div>
 </template>
