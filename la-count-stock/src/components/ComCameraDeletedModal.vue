@@ -38,26 +38,27 @@ if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices || !navi
   alert("Your browser doesn't support the Barcode Detection API");
 } else {
   // Get the list of available video input devices (cameras)
-  navigator.mediaDevices.enumerateDevices()
-  .then(function(devices) {
-    const cameras = devices.filter(function(device) {
-      return device.kind === 'videoinput';
-    });
-    cameras.forEach(function(camera, index) {
-    
-      cameraList.value.push({"deviceID":camera.deviceId,"name":`Camera ${index + 1}`})
-    });
-  })
-  .catch(function(error) {
-    console.error('Error enumerating devices:', error);
-  });
+  var constraints = {video: true, audio: false};
+     navigator.mediaDevices.getUserMedia(constraints).then(stream => {
+  
+      navigator.mediaDevices.enumerateDevices().then(function(devices) {
+        const cameras = devices.filter(function(device) {
+          return device.kind === 'videoinput';
+        });
+        cameras.forEach(function(camera, index) {
+        
+          cameraList.value.push({"deviceID":camera.deviceId,"name":`Camera ${index + 1}`})
+        });
+      });
 
 
-}
-
+    })
+  
+  }
  
 
 })
+
 function startBarcodeScanner(cameraId) {
     // Access the selected camera
     navigator.mediaDevices.getUserMedia({ video: { deviceId: cameraId } })

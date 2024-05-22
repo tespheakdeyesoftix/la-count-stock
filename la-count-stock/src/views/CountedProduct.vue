@@ -186,7 +186,8 @@ function submitReconcil() {
         acceptLabel: 'Submit',
         accept: () => {
             isLoading.value = true;
-            postApi("api/method/erpnext.stock.doctype.stock_reconciliation.stock_reconciliation.save_stock_reconcil", {
+            // postApi("api/method/erpnext.stock.doctype.stock_reconciliation.stock_reconciliation.save_stock_reconcil", {
+            postApi("api/method/epos_restaurant_2023.api.la_stock.save_stock_reconcil", {
                 param: JSON.stringify(countProduct.stockReconcil)
             }).then(r => {
                 countProduct.stockReconcil.items = []
