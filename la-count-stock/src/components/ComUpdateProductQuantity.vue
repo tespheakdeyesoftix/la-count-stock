@@ -1,6 +1,6 @@
 <template >
   <div>
-    <table>
+    <table style="width: 100%;">
       <tr>
       <th>
          Product Name
@@ -26,7 +26,7 @@
         </th>
       </tr>
     </table>
-    <div class="product-qty-wrapper" style="margin-top: 10px;width: 100%;"><InputNumber v-model="product.qty" /></div>
+    <div class="product-qty-wrapper" style="margin-top: 10px;width: 100%;"><InputNumber input-style="width: 100%;"v-model="product.qty" /></div>
     <Button class="p-button" @click="save">Save</Button>
   </div>
 </template>

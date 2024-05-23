@@ -35,17 +35,20 @@ const data = ref([])
       data.value = r.message
     })
   })
-  function test(){
-    router.push({
-              name: 'test'
-            })
-  }
   function ReconcilationClick(d){
     d.items=[]
-    localStorage.setItem('selected_warehouse',JSON.stringify(d))
+    if (!localStorage.key(d.name)){
+      localStorage.setItem(d.name,JSON.stringify(d))
+    }else{
+      let exist_data  = JSON.parse(localStorage.getItem(d.name)) 
+      exist_data.set_warehouse = d.set_warehouse
+      localStorage.setItem(d.name,JSON.stringify(exist_data))
+    }
+    
     countProduct.stockReconcil = d
     router.push({
-              name: 'count-product'
+              name: `count-product`,
+              params: { name : d.name},
             })
   }
 </script>

@@ -13,7 +13,7 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/count-product',
+      path: '/count-product/:name',
       name: 'count-product',
       component: CountedProduct
     },

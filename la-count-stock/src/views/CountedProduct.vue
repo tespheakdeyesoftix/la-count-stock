@@ -1,6 +1,6 @@
 <template>
   <div style="margin: 10px;"> 
-    <div style="text-align: center;">{{ countProduct.stockReconcil.name }} <br/> {{ countProduct.stockReconcil.set_warehouse }}</div>
+    <div style="text-align: center;">{{ countProduct?.stockReconcil?.name }} <br/> {{ countProduct?.stockReconcil?.set_warehouse }}</div>
    <div class="">
         <div style="margin-top:10px;"> <InputText style="width: 100%;" ref="barcodeInput" placeholder="Enter or Scan QR Code" type="text" v-model="barcode" @keyup="save" @keyup.enter="saveEnter"/></div>
         <div class="OpenCamera"> <Button @click="OpenCamera" class="p-button">Scan Camera</Button> </div>
@@ -62,11 +62,12 @@ import Dialog from 'primevue/dialog';
 import BlockUI from 'primevue/blockui';
 import Button from 'primevue/button';
 import { getApi, postApi } from '@/utils';
-import { RouterLink, RouterView } from 'vue-router'
-import { ref, onMounted,inject } from 'vue';
+import { useRoute } from 'vue-router'
+import { ref, onMounted,inject,watch  } from 'vue';
 import { useConfirm } from "primevue/useconfirm";
 import { useDialog } from 'primevue/usedialog';
 import ComCameraDetectedModal from '@/components/ComCameraDeletedModal.vue'
+const route = useRoute()
 const confirm = useConfirm();
 const value = ref(null);
 const barcode = ref(null);
@@ -86,9 +87,11 @@ function onBack() {
     })
 }
 
+
+
 onMounted(() => {
 
-    countProduct.stockReconcil = JSON.parse(localStorage.getItem('selected_warehouse'))
+    countProduct.stockReconcil = JSON.parse(localStorage.getItem(route.params.name))
     barcodeInput.value.$el.focus()
 })
 function save(e) {
@@ -96,7 +99,6 @@ function save(e) {
     if (e.key == "!") {
         addItem()
         const el = document.querySelector(".qty-wrapper input");
-        console.log(el)
             el.focus()
             setTimeout(() => {
                 el.select()
@@ -131,8 +133,11 @@ function saveEnter(e) {
             
             setTimeout(() => {
                 const el = document.querySelector(".qty-wrapper input");
-                el.focus()
-                el.select()
+                if (el){
+                    el.focus()
+                    el.select()
+                }
+                
             }, 200);
             
             e.preventDefault()
@@ -150,7 +155,7 @@ async function addItem() {
     if (countProduct.stockReconcil.items.filter((item) => item.item_code == barcode.value.replace('!', '')).length > 0) {
         exist_item.qty = exist_item.qty + 1
         exist_item.date = new Date()
-        localStorage.setItem('selected_warehouse', JSON.stringify(countProduct.stockReconcil))
+        localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
         barcode.value = ''
     } else {
         loadingQty.value = true;
@@ -162,12 +167,15 @@ async function addItem() {
                 name: countProduct.stockReconcil.name
             })
         }).then(r => {
-
-            r.message.qty = r.message.qty + 1
+            if (r.message.qty){
+                r.message.qty = r.message.qty + 1
+            }else{
+                r.message.qty = 1
+            }
+            
             r.message.date = new Date()
             countProduct.stockReconcil.items.push(r.message)
-
-            localStorage.setItem('selected_warehouse', JSON.stringify(countProduct.stockReconcil))
+            localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
             barcode.value = ''
             loadingQty.value = false
         }).catch(err => {
@@ -193,7 +201,7 @@ function submitReconcil() {
                 param: JSON.stringify(countProduct.stockReconcil)
             }).then(r => {
                 countProduct.stockReconcil.items = []
-                localStorage.setItem('selected_warehouse', JSON.stringify(countProduct.stockReconcil))
+                localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
                 isLoading.value = false;
             }).catch((e) => {
                 isLoading.value = false;
@@ -211,18 +219,18 @@ function submitReconcil() {
 
 function addQty(d) {
     d.qty = d.qty + 1
-    localStorage.setItem('selected_warehouse', JSON.stringify(countProduct.stockReconcil))
+    localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
 }
 function SubstractQty(d) {
     d.qty = d.qty - 1
-    localStorage.setItem('selected_warehouse', JSON.stringify(countProduct.stockReconcil))
+    localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
 }
 
 function onQtyInput(d) {
     let valueString = event.target.value
     let valueInt = parseInt(valueString, 10);
     d.qty = valueInt
-    localStorage.setItem('selected_warehouse', JSON.stringify(countProduct.stockReconcil))
+    localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
 }
 
 function deleteItem(d) {
@@ -235,13 +243,14 @@ function deleteItem(d) {
         acceptLabel: 'Yes',
         accept: () => {
             countProduct.stockReconcil.items = countProduct.stockReconcil.items.filter(x => x.item_code != d.item_code)
-            localStorage.setItem('selected_warehouse', JSON.stringify(countProduct.stockReconcil))
+            localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
 
         }
 
     });
 
 }
+
 </script>
 <style scoped>
 .cart-item{
