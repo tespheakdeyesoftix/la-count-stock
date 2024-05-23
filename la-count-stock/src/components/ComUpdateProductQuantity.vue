@@ -11,18 +11,18 @@
       </tr>
       <tr>
         <th>
-         QTY
+          Qty on hand
         </th>
         <th>
-          {{ product.qty }}
+          {{ product.actual_qty }}
         </th>
       </tr>
       <tr>
         <th>
-          Date
+          Stock 
         </th>
         <th>
-          {{ product.date }}
+          {{ product.stock_uom }}
         </th>
       </tr>
     </table>
