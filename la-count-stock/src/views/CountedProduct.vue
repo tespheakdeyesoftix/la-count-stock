@@ -24,7 +24,7 @@
                         <div class="qty-in-de">
                             <Button style="color: red;" class="decrease-btn" icon="pi pi-minus" @click="SubstractQty(d)"/>
                             <div class="qty-wrapper">
-                                <InputNumber input-class="newinputnumber" v-model="d.qty" class="qty-cus"/>
+                                <InputNumber input-class="newinputnumber" v-model="d.qty" class="qty-cus" @update:modelValue="qtyChanged(d,e)"/>
                             </div>
                             <Button style="color: green;" class="increase-btn" icon="pi pi-plus" @click="addQty(d)"/>
                         </div>
@@ -250,6 +250,9 @@ function deleteItem(d) {
     });
 
 }
+function qtyChanged(){
+    localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
+  }
 
 </script>
 <style scoped>
