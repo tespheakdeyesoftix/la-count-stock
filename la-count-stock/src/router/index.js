@@ -4,8 +4,8 @@ import CountedProduct from '../views/CountedProduct.vue'
 import test from '../views/test.vue'
 
 const router = createRouter({
-  // history: createWebHistory('/la-count-stock/'),
-  history: createWebHistory('/'),
+  history: createWebHistory('/la-count-stock/'),
+  // history: createWebHistory('/'),
   routes: [
     {
       path: '/',

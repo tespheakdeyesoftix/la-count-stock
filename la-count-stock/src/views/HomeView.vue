@@ -11,6 +11,7 @@
           <button class="button-cus" @click="ReconcilationClick(d)">
             <p style="font-weight: 600;">{{ d.name }}<br/>
               {{ d.set_warehouse }}</p>
+              <p>Total Product: {{ d.total_item }}</p>
           </button>
       </template>
     </div>
