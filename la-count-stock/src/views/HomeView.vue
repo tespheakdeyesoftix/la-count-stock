@@ -38,13 +38,17 @@ const data = ref([])
   })
   function ReconcilationClick(d){
     d.items=[]
-    if (!localStorage.key(d.name)){
-      localStorage.setItem(d.name,JSON.stringify(d))
-    }else{
+    if (localStorage.getItem(d.name)){
       let exist_data  = JSON.parse(localStorage.getItem(d.name)) 
-      exist_data.set_warehouse = d.set_warehouse
+      if (exist_data){
+        exist_data.set_warehouse = d.set_warehouse
+      }
+      
       localStorage.setItem(d.name,JSON.stringify(exist_data))
+    }else{
+      localStorage.setItem(d.name,JSON.stringify(d))
     }
+    
     
     countProduct.stockReconcil = d
     router.push({

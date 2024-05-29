@@ -10,8 +10,12 @@ export default defineConfig({
     vue(),
     VueDevTools(),
   ],
-  publicPath: '/la-count-stock/',
+  server: {
+    host: true,
+  },
   base: '/la-count-stock/',
+  publicPath: '/la-count-stock/',
+  
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

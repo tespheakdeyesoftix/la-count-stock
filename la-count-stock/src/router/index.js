@@ -6,6 +6,8 @@ import test from '../views/test.vue'
 const router = createRouter({
   history: createWebHistory('/la-count-stock/'),
   // history: createWebHistory('/'),
+  mode: 'history',
+  base:"/la-count-stock/",
   routes: [
     {
       path: '/',
@@ -17,6 +19,7 @@ const router = createRouter({
       name: 'count-product',
       component: CountedProduct
     },
+
     {
       path: '/test',
       name: 'test',

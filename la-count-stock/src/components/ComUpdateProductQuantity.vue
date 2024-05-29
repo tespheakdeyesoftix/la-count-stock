@@ -55,7 +55,7 @@
       countProduct.stockReconcil.items.push(product.value)
     }
     
-    localStorage.setItem("selected_warehouse",JSON.stringify(countProduct.stockReconcil))
+    localStorage.setItem(countProduct.stockReconcil.name ,JSON.stringify(countProduct.stockReconcil))
     dialogRef.value.close(true)
   }
 

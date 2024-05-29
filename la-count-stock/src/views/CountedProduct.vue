@@ -90,7 +90,6 @@ function onBack() {
 
 
 onMounted(() => {
-
     countProduct.stockReconcil = JSON.parse(localStorage.getItem(route.params.name))
     barcodeInput.value.$el.focus()
 })
@@ -147,6 +146,7 @@ function saveEnter(e) {
 
 }
 async function addItem() {
+
     if (countProduct.stockReconcil.items.length > 20) {
         alert('Item can not more than 20. please submit.')
         return
