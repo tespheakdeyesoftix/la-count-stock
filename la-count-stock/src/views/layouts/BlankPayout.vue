@@ -1,6 +1,5 @@
 <template>
         <div class="wrapper">
-            blank layout
       <RouterView />
     </div>
 </template>

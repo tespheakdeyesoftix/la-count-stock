@@ -1,12 +1,18 @@
 const apiUrl="http://154.197.83.232:28565/"
 // const token = "f185af83e9c902a:44054fbd018e6f3"
-const token = "efd0402becd8401:42e806ec6addead" //LA TOKEN
+let token = "" //LA TOKEN
 // const token = "c7988962eef0dcc:1bc9483286a8571" //EPOS
-
+let authentication = undefined
+let current_user = undefined
+if (localStorage.getItem("_authentication")){
+    authentication = JSON.parse(localStorage.getItem("_authentication"))
+    const str_user_decoded = JSON.stringify(atob(authentication.message))
+    current_user = JSON.parse(str_user_decoded.replace(/'/g, '"').replace("\"{","{").replace("}\"","}"))
+    token = current_user.api_key + ":" + current_user.api_secret
+}
 
 export function getApi(apiEndpoint, params = Object){
     return new Promise((resolve, reject)=>{
-        
         // Construct query string from the object
         const queryString = Object.entries(params)
         .map(([key, value]) => {
@@ -69,7 +75,6 @@ export function postApi(apiEndpoint, params = Object){
                                  
                             });
                         }
-                        console.log(server_message)
                     }
                     throw new Error(JSON.stringify( errorData));
                   });
@@ -108,19 +113,18 @@ export function loginApi(apiEndpoint, params = Object){
                                  
                                 let message =  JSON.parse(s)
                                window.postMessage({message:message.message})
-                                 
                             });
                         }
-                        console.log(server_message)
+                        
                     }
-                    throw new Error(JSON.stringify( errorData));
+                    reject(errorData.message.message)
                   });
             }
             resolve (response.json())
           })
            
           .catch(err => {
-        
+            
             reject(err)
         })
 

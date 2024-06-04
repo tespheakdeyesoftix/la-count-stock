@@ -26,20 +26,26 @@ app.provide("$auth", auth);
 
 router.beforeEach(async (to, from, next) => {
     
+        let authentication = undefined
+        let current_user = undefined
+        if (localStorage.getItem("_authentication")){
+            authentication = JSON.parse(localStorage.getItem("_authentication"))
+            const str_user_decoded = JSON.stringify(atob(authentication.message))
+            current_user = JSON.parse(str_user_decoded.replace(/'/g, '"').replace("\"{","{").replace("}\"","}"))
+            auth.isLoggedIn = true
+            auth.user = current_user
+        }
+    
     if (to.matched.some((record) => !record.meta.isLoginPage)) {
-        // this route requires auth, check if logged in
-        // if not, redirect to login page.
-      
-        if (!auth.isLoggedIn ) {
+        
+        if (!auth.isLoggedIn) {
             next({ name: 'Login', query: { route: to.path } });
         } else {
             next();
         }
-
     } else {
-        
-        if (auth.isLoggedIn) {
-            next({ name: 'Home' });
+        if (auth.isLoggedIn ) {
+            next({ name: 'home' });
         } else {
             next();
         }

@@ -15,21 +15,23 @@ export default class Auth {
 
 		this.isLoggedIn = this.cookie.user_id && this.cookie.user_id !== 'Guest';
 	}
-
+	
 	async login(email, password) {
         return new Promise(async (resolve) => {
-            let res = await loginApi('api/method/login', {
+           	await loginApi('api/method/erpnext.api.login', {
                 usr: email,
                 pwd: password,
-            });
-            
-            if (res) {
-                this.isLoggedIn = true;
-				localStorage.setItem("user", JSON.stringify(res) );
-                resolve(res);
-            }
+            }).then((res)=>{
+				if (res) {
+					this.isLoggedIn = true;
+					localStorage.setItem("_authentication", JSON.stringify(res));
+					resolve(res);
+				}
+			});
 			resolve(false);
-		});
+		}).catch(err => {
+            reject(err)
+        });
 
 	}
 

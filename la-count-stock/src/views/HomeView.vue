@@ -1,8 +1,12 @@
  
 <template>
+  
+
   <main class="main-section">
+   
+
+
     <h1>Inventory Count</h1>
-    {{ auth }}
     <template v-if="data.length > 0">
       
       <p>You have {{ data?.length }} pending stock Reconciliation Transaction</p>
@@ -22,15 +26,20 @@
       <p>There is no stock Reconciliation Number. Please open stock Reconciliation Number first.</p>
     </template>  
 
-    <Button @click="getCookie('sid')">get cookie</Button>
   </main>
- 
+  <OverlayPanel ref="op">
+            <div>
+              HIIIIIIIIII
+            </div>
+  </OverlayPanel>
 </template>
 <script setup>
   import router from '@/router';
 import { getApi,postApi } from '@/utils';
-
 import { onMounted,ref,inject } from 'vue';
+
+
+
 const countProduct = inject('$countProduct')
 const data = ref([])
 const auth = inject('$auth')
