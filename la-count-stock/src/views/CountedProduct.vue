@@ -3,6 +3,7 @@
     <div style="text-align: center;">{{ countProduct?.stockReconcil?.name }} <br/> {{ countProduct?.stockReconcil?.set_warehouse }}</div>
    <div class="">
         <div style="margin-top:10px;"> <InputText style="width: 100%;" ref="barcodeInput" placeholder="Enter or Scan QR Code" type="text" v-model="barcode" @keyup="save" @keyup.enter="saveEnter"/></div>
+        <div class="OpenCamera"> <Button @click="onEnter" class="p-button">Check</Button> </div>
         <div class="OpenCamera"> <Button @click="OpenCamera" class="p-button">Scan Camera</Button> </div>
    </div>
    
@@ -105,6 +106,19 @@ function save(e) {
         e.preventDefault()
     }
 }
+
+function onEnter(e) {
+
+    addItem()
+    const el = document.querySelector(".qty-wrapper input");
+        el.focus()
+        setTimeout(() => {
+            el.select()
+        }, 500);
+    e.preventDefault()
+
+}
+
 function OpenCamera(){
     dialog.open(ComCameraDetectedModal, {
         props: {

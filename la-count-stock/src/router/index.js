@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import CountedProduct from '../views/CountedProduct.vue'
-import test from '../views/test.vue'
+
 
 const router = createRouter({
-  history: createWebHistory('/la-count-stock/'),
+  history: createWebHistory('/la-count-stock'),
   // history: createWebHistory('/'),
   mode: 'history',
   base:"/la-count-stock/",
@@ -14,16 +14,21 @@ const router = createRouter({
       name: 'home',
       component: HomeView
     },
+
     {
       path: '/count-product/:name',
       name: 'count-product',
       component: CountedProduct
     },
-
     {
-      path: '/test',
-      name: 'test',
-      component: test
+      path: '/login',
+      name: 'Login',
+      component: () =>
+        import(/* webpackChunkName: "login" */ '../views/logins/Login.vue'),
+      meta: {
+        isLoginPage: true
+      },
+      props: true
     },
     
   ]

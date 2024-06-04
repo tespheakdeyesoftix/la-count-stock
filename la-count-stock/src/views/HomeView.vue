@@ -2,7 +2,9 @@
 <template>
   <main class="main-section">
     <h1>Inventory Count</h1>
+    {{ auth }}
     <template v-if="data.length > 0">
+      
       <p>You have {{ data?.length }} pending stock Reconciliation Transaction</p>
       <p>Please select stock Reconciliation Number below:</p>
       <br/>
@@ -19,22 +21,28 @@
     <template v-else>
       <p>There is no stock Reconciliation Number. Please open stock Reconciliation Number first.</p>
     </template>  
+
+    <Button @click="getCookie('sid')">get cookie</Button>
   </main>
  
 </template>
 <script setup>
   import router from '@/router';
-import { getApi } from '@/utils';
+import { getApi,postApi } from '@/utils';
 
 import { onMounted,ref,inject } from 'vue';
 const countProduct = inject('$countProduct')
 const data = ref([])
-
+const auth = inject('$auth')
   onMounted (()=>{
-
-    getApi("api/method/epos_restaurant_2023.api.la_stock.get_pending_stock_count").then(r=>{
+    
+    postApi("api/method/frappe.auth.get_logged_user").then(r=>{
+      console.log(r.message) 
+    })
+    getApi("api/method/erpnext.stock.doctype.stock_reconciliation.stock_reconciliation.get_pending_stock_count").then(r=>{
       data.value = r.message
     })
+
   })
   function ReconcilationClick(d){
     d.items=[]
@@ -56,5 +64,4 @@ const data = ref([])
               params: { name : d.name},
             })
   }
-
 </script>

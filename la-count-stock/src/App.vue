@@ -5,24 +5,28 @@
   <Toast />
   <DynamicDialog />
   <header>
- 
-    <div class="wrapper">
-      <RouterView />
-    </div>
+    <MainLayout v-if="auth.isLoggedIn==1"/>
+		
+		<BlankLayout v-else/>
+
   </header>
 
 
 </template>
 <script setup>
+import {inject} from 'vue'
 import DynamicDialog from 'primevue/dynamicdialog';
+
 import { RouterLink, RouterView } from 'vue-router'
 import ConfirmDialog from 'primevue/confirmdialog';
 import {onMounted, onUnmounted} from "vue"
 import Toast from 'primevue/toast';
+import MainLayout from '@/views/layouts/MainLayout.vue'
+import BlankLayout from '@/views/layouts/BlankPayout.vue'
 
 import { useToast } from "primevue/usetoast";
 const toast = useToast();
-
+const auth = inject('$auth')
  
 
 const actionClickHandler = async function (e) {
@@ -41,6 +45,16 @@ onMounted(() => {
      
     window.addEventListener('message', actionClickHandler, false);
 })
+
+function sessionUser() {
+    let cookies = new URLSearchParams(document.cookie.split('; ').join('&'))
+    let _sessionUser = cookies.get('user_id')
+    if (_sessionUser === 'Guest') {
+      _sessionUser = null
+    }
+    console.log(_sessionUser)
+    return _sessionUser
+  }
 
 </script>
 <style scoped>
