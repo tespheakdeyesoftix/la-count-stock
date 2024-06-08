@@ -1,20 +1,25 @@
 <template lang="">
     <div style="width:100%;padding-bottom:10px">
-        <div class="fix_header">
-            {{keyword}}
+        <div class="fix_header text-center">
+            <span class="text-500">Search Keyword >></span>  <span class="text-bold">{{keyword}}</span>
         </div>
     <div style="padding-top:8px;padding-bottom:8px;width:100%" class="flex">
         <DataView :value="productList">
             <template #list="slotProps">
                <div @click="callback(item)" v-for="(item, index) in slotProps.items" class="item">
-                <div>
-                    {{item.item_name}}
-                </div>
-                <div>
+                <div  class="text-bold">
                     {{item.item_code}}
                 </div>
-                <div>
-                      {{item.stock_uom}}
+                <div >
+                    
+                    <div>{{item.item_name}}</div>
+                     
+                </div>
+                
+                <div class="flex ">
+                        <div class="mr-2">BOH: {{item.actual_qty}}</div>
+                        <div>{{item.stock_uom}}</div>
+                      
                 </div>
               
                </div>
