@@ -27,27 +27,18 @@
     </template>  
 
   </main>
-  <OverlayPanel ref="op">
-            <div>
-              HIIIIIIIIII
-            </div>
-  </OverlayPanel>
+
 </template>
 <script setup>
   import router from '@/router';
 import { getApi,postApi } from '@/utils';
 import { onMounted,ref,inject } from 'vue';
 
-
-
 const countProduct = inject('$countProduct')
 const data = ref([])
 const auth = inject('$auth')
   onMounted (()=>{
-    
-    postApi("api/method/frappe.auth.get_logged_user").then(r=>{
-      console.log(r.message) 
-    })
+
     getApi("api/method/erpnext.stock.doctype.stock_reconciliation.stock_reconciliation.get_pending_stock_count").then(r=>{
       data.value = r.message
     })

@@ -13,8 +13,8 @@ export default defineConfig({
   server: {
     host: true,
   },
-  base: '/la-count-stock',
-  publicPath: '/la-count-stock',
+  base: '/',
+  publicPath: '/',
   
   resolve: {
     alias: {

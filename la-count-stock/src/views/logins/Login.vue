@@ -1,5 +1,7 @@
 <template>
-    
+ <div class="body">
+
+   
     <div class="form-box">
       <div class="m-auto">
         <div>
@@ -23,6 +25,7 @@
         </div>
         
     </div>
+    </div> 
 </template>
 <script setup>
 import InputText from 'primevue/inputtext';
@@ -30,22 +33,25 @@ import Password from 'primevue/password';
 import Button from 'primevue/button';
 
 import router from '@/router';
-import { ref, inject } from 'vue'
+import { ref, inject , onMounted  } from 'vue'
 const user = ref({ "usr": "", "pwd": "" })
 const auth = inject('$auth')
 const loginErrorText=ref("")
 function onLogin() {
     auth.login(user.value.usr, user.value.pwd).then((res) => {
-        router.push({ name: 'home' })
+      location.reload();
     }).catch((err) => {
       
     })
 
 }
 
-
+onMounted(() => {
+    document.body.classList.add('body-class');
+});
 </script>
 <style scoped>
+
 .w-full{
     width: 100% !important;
 }
@@ -67,4 +73,12 @@ function onLogin() {
 ::v-deep .p-password-input{
     width: 100% !important;
 }
+.body{
+  width: 100%;
+  height: 100vh;
+  display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 </style>

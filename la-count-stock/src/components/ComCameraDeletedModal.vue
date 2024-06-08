@@ -234,9 +234,9 @@ async function  searchProduct(barcode){
     } else {
         loadingQty.value = true;
         
-       // await postApi("api/method/erpnext.stock.doctype.stock_reconciliation.stock_reconciliation.get_item_qty_from_warehouse", {
+       await postApi("api/method/erpnext.stock.doctype.stock_reconciliation.stock_reconciliation.get_item_qty_from_warehouse", {
 
-        await postApi("api/method/epos_restaurant_2023.api.la_stock.get_item_qty_from_warehouse", {
+        // await postApi("api/method/epos_restaurant_2023.api.la_stock.get_item_qty_from_warehouse", {
             param: JSON.stringify({
                 warehouse: countProdct.stockReconcil.set_warehouse,
                 item_code: barcode,

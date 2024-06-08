@@ -1,6 +1,6 @@
 <template>
   <div style="margin: 10px;"> 
-    <div style="text-align: center;">{{ countProduct?.stockReconcil?.name }} <br/> {{ countProduct?.stockReconcil?.set_warehouse }}</div>
+    <div style="text-align: center;margin-top: 6px;"><a @click="viewStockReconcilClick(countProduct?.stockReconcil?.name)">{{ countProduct?.stockReconcil?.name }}</a>  <br/> {{ countProduct?.stockReconcil?.set_warehouse }}</div>
    <div class="">
         <div style="margin-top:10px;"> <InputText style="width: 100%;" ref="barcodeInput" placeholder="Enter or Scan QR Code" type="text" v-model="barcode" @keyup="save" @keyup.enter="saveEnter"/></div>
         <div class="OpenCamera"> <Button @click="onEnter" class="p-button">Check</Button> </div>
@@ -60,7 +60,6 @@ import InputText from 'primevue/inputtext';
 import InputNumber from 'primevue/inputnumber';
 import ProgressSpinner from 'primevue/progressspinner';
 import Dialog from 'primevue/dialog';
-import BlockUI from 'primevue/blockui';
 import Button from 'primevue/button';
 import { getApi, postApi } from '@/utils';
 import { useRoute } from 'vue-router'
@@ -68,6 +67,8 @@ import { ref, onMounted,inject,watch  } from 'vue';
 import { useConfirm } from "primevue/useconfirm";
 import { useDialog } from 'primevue/usedialog';
 import ComCameraDetectedModal from '@/components/ComCameraDeletedModal.vue'
+import StockReconcilDetail from '@/components/StockReconcilDetail.vue'
+import ComSelectProductList from '@/components/ComSelectProductList.vue'
 const route = useRoute()
 const confirm = useConfirm();
 const value = ref(null);
@@ -109,12 +110,16 @@ function save(e) {
 
 function onEnter(e) {
 
-    addItem()
+    addItemOnEnter()
     const el = document.querySelector(".qty-wrapper input");
+    if (el){
         el.focus()
         setTimeout(() => {
             el.select()
         }, 500);
+    }
+        
+    
     e.preventDefault()
 
 }
@@ -132,7 +137,7 @@ function OpenCamera(){
                 '640px': '100vw'  
             },
             contentStyle:{
-padding:'0px 15px 0px 5px'
+            padding:'0px 15px 0px 5px'
             },
             modal: true
         }});
@@ -159,6 +164,81 @@ function saveEnter(e) {
     }
 
 }
+
+async function addItemOnEnter() {
+
+if (countProduct.stockReconcil.items.length > 20) {
+    alert('Item can not more than 20. please submit.')
+    return
+}
+const exist_item = countProduct.stockReconcil.items.find((item) => item.item_code == barcode.value.replace('!', ''))
+if (countProduct.stockReconcil.items.filter((item) => item.item_code == barcode.value.replace('!', '')).length > 0) {
+    exist_item.qty = exist_item.qty + 1
+    exist_item.date = new Date()
+    localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
+    barcode.value = ''
+} else {
+    loadingQty.value = true;
+   await postApi("api/method/erpnext.stock.doctype.stock_reconciliation.stock_reconciliation.get_item_qty_from_warehouse_contain_code", {
+    // await postApi("api/method/epos_restaurant_2023.api.la_stock.get_item_qty_from_warehouse", {
+        param: JSON.stringify({
+            warehouse: countProduct.stockReconcil.set_warehouse,
+            item_code: barcode.value.replace('!', ''),
+            name: countProduct.stockReconcil.name
+        })
+    }).then(r => {
+        if (r.message.length == 1){
+            if (r.message.qty){
+                r.message[0].qty = r.message[0].qty + 1
+            }else{
+                r.message[0].qty = 1
+            }
+            r.message.date = new Date()
+            countProduct.stockReconcil.items.push(r.message)
+            localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
+            barcode.value = ''
+        }else{
+            dialog.open(ComSelectProductList, {
+                data:{"product_list":r.message},
+                onClose: (opt) => {
+                    if(opt.data){
+                        if (opt.data.product.qty){
+                        opt.data.product.qty = opt.data.product.qty + 1
+                    }else{
+                        opt.data.product.qty = 1
+                    }
+                    r.message.date = new Date()
+                    countProduct.stockReconcil.items.push(opt.data.product)
+                    localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
+                    barcode.value = ''
+                    }
+                    
+                },
+                props: {
+                    style: {
+                        width: '60%', 
+                        height: '100vh',
+                        margin: '0', 
+                    },
+                    breakpoints: {
+                        '960px': '100vw', 
+                        '640px': '100vw'  
+                    },
+                    contentStyle:{
+                    padding:'0px 15px 0px 5px'
+                        },
+                        modal: true
+                    }});
+        }        
+        
+        loadingQty.value = false
+    }).catch(err => {
+        barcode.value = ''
+        loadingQty.value = false
+    })
+}
+}
+
 async function addItem() {
 
     if (countProduct.stockReconcil.items.length > 20) {
@@ -173,8 +253,8 @@ async function addItem() {
         barcode.value = ''
     } else {
         loadingQty.value = true;
-       // await postApi("api/method/erpnext.stock.doctype.stock_reconciliation.stock_reconciliation.get_item_qty_from_warehouse", {
-        await postApi("api/method/epos_restaurant_2023.api.la_stock.get_item_qty_from_warehouse", {
+       await postApi("api/method/erpnext.stock.doctype.stock_reconciliation.stock_reconciliation.get_item_qty_from_warehouse", {
+        // await postApi("api/method/epos_restaurant_2023.api.la_stock.get_item_qty_from_warehouse", {
             param: JSON.stringify({
                 warehouse: countProduct.stockReconcil.set_warehouse,
                 item_code: barcode.value.replace('!', ''),
@@ -210,10 +290,10 @@ function submitReconcil() {
         acceptLabel: 'Submit',
         accept: () => {
             isLoading.value = true;
+            postApi("api/method/erpnext.stock.doctype.stock_reconciliation.stock_reconciliation.save_stock_reconcil", {
             // postApi("api/method/erpnext.stock.doctype.stock_reconciliation.stock_reconciliation.save_stock_reconcil", {
-            postApi("api/method/epos_restaurant_2023.api.la_stock.save_stock_reconcil", {
                 param: JSON.stringify(countProduct.stockReconcil)
-            }).then(r => {
+            }).then((r) => {
                 countProduct.stockReconcil.items = []
                 localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
                 isLoading.value = false;
@@ -221,15 +301,34 @@ function submitReconcil() {
                 isLoading.value = false;
             })
 
-
         }
 
     });
 };
 
 
-
-
+function viewStockReconcilClick(name){
+    if (name){
+        dialog.open(StockReconcilDetail, {
+        data:{"name":name},
+        props: {
+            style: {
+                width: '60%', 
+                height: '100vh',
+                margin: '0', 
+            },
+            breakpoints: {
+                '960px': '100vw', 
+                '640px': '100vw'  
+            },
+            contentStyle:{
+            padding:'0px 15px 0px 5px'
+                },
+                modal: true
+            }});
+    }
+    
+}
 
 function addQty(d) {
     d.qty = d.qty + 1
