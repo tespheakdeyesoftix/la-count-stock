@@ -190,11 +190,10 @@ if (countProduct.stockReconcil.items.length > 20) {
                     if(opt.data){
                         const exist_item = countProduct.stockReconcil.items.find((item) => item.item_code == opt.data.product.item_code)
                         if (countProduct.stockReconcil.items.filter((item) => item.item_code == opt.data.product.item_code).length > 0)
-
                         if (exist_item.qty){
                             exist_item.qty = opt.data.product.qty + 1
                         }else{
-                            opt.data.product.qty = 1
+                            exist_item.qty = 1
                         }
                         r.message.date = new Date()
                         countProduct.stockReconcil.items.push(opt.data.product)
