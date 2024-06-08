@@ -171,15 +171,8 @@ if (countProduct.stockReconcil.items.length > 20) {
     alert('Item can not more than 20. please submit.')
     return
 }
-const exist_item = countProduct.stockReconcil.items.find((item) => item.item_code == barcode.value.replace('!', ''))
-if (countProduct.stockReconcil.items.filter((item) => item.item_code == barcode.value.replace('!', '')).length > 0) {
-    exist_item.qty = exist_item.qty + 1
-    exist_item.date = new Date()
-    localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
-    barcode.value = ''
-} else {
     loadingQty.value = true;
-   await postApi("api/method/erpnext.stock.doctype.stock_reconciliation.stock_reconciliation.get_item_qty_from_warehouse_contain_code", {
+    await postApi("api/method/erpnext.stock.doctype.stock_reconciliation.stock_reconciliation.get_item_qty_from_warehouse_contain_code", {
     // await postApi("api/method/epos_restaurant_2023.api.la_stock.get_item_qty_from_warehouse", {
         param: JSON.stringify({
             warehouse: countProduct.stockReconcil.set_warehouse,
@@ -187,30 +180,26 @@ if (countProduct.stockReconcil.items.filter((item) => item.item_code == barcode.
             name: countProduct.stockReconcil.name
         })
     }).then(r => {
-        
-            if (r.message.qty){
-                r.message[0].qty = r.message[0].qty + 1
-            }else{
-                r.message[0].qty = 1
-            }
-            r.message.date = new Date()
-            countProduct.stockReconcil.items.push(r.message)
-            localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
-            barcode.value = ''
-       
             dialog.open(ComSelectProductList, {
-                data:{"product_list":r.message},
+                data:  
+                {
+                    "product_list":r.message,
+                    "keyword":barcode
+                },
                 onClose: (opt) => {
                     if(opt.data){
-                        if (opt.data.product.qty){
-                        opt.data.product.qty = opt.data.product.qty + 1
-                    }else{
-                        opt.data.product.qty = 1
-                    }
-                    r.message.date = new Date()
-                    countProduct.stockReconcil.items.push(opt.data.product)
-                    localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
-                    barcode.value = ''
+                        const exist_item = countProduct.stockReconcil.items.find((item) => item.item_code == opt.data.product.item_code)
+                        if (countProduct.stockReconcil.items.filter((item) => item.item_code == opt.data.product.item_code).length > 0)
+
+                        if (exist_item.qty){
+                            exist_item.qty = opt.data.product.qty + 1
+                        }else{
+                            opt.data.product.qty = 1
+                        }
+                        r.message.date = new Date()
+                        countProduct.stockReconcil.items.push(opt.data.product)
+                        localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
+                        barcode.value = ''
                     }
                     
                 },
@@ -236,7 +225,7 @@ if (countProduct.stockReconcil.items.filter((item) => item.item_code == barcode.
         barcode.value = ''
         loadingQty.value = false
     })
-}
+
 }
 
 async function addItem() {

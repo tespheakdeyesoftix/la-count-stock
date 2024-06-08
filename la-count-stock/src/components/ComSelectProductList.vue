@@ -1,5 +1,8 @@
 <template lang="">
-    <div style="width:100%">
+    <div style="width:100%;padding-bottom:10px">
+        <div class="fix_header">
+            {{keyword}}
+        </div>
     <div style="padding-top:8px;padding-bottom:8px;width:100%" class="flex">
         <DataView :value="productList">
             <template #list="slotProps">
@@ -29,6 +32,7 @@ const dialogRef = inject("dialogRef");
 const data = ref({})
 const loadingData = ref(false)
 const productList = ref(dialogRef.value.data.product_list)
+const keyword = ref(dialogRef.value.data.keyword)
 const currentViewItemBy = ref({ name: 'All', label: 'All Item' })
 const views = ref([
     { name: 'All', label: 'All Item' },
@@ -93,5 +97,24 @@ th:first-child {
 }
 ::v-deep .p-component{
     width: 100%;
+}
+::v-deep .p-dataview-content{
+    max-height: none !important;
+    margin-top: 10px;
+}
+::v-deep .p-dialog-content{
+    margin-bottom: 20px;
+    margin-left: 11px;
+}
+.fix_header{
+    position: fixed;
+    background: white;
+    width: 96%;
+    border-left: 2px solid #8dd97f;
+    padding-left: 10px;
+    top: 50px;
+    padding-right: 20px;
+    font-size: 20px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
 }
 </style>
