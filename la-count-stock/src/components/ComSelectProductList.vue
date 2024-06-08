@@ -1,6 +1,5 @@
 <template lang="">
     <div style="width:100%">
-    {{productList}}
     <div style="padding-top:8px;padding-bottom:8px;width:100%" class="flex">
         <DataView :value="productList">
             <template #list="slotProps">

@@ -187,7 +187,7 @@ if (countProduct.stockReconcil.items.filter((item) => item.item_code == barcode.
             name: countProduct.stockReconcil.name
         })
     }).then(r => {
-        if (r.message.length == 1){
+        
             if (r.message.qty){
                 r.message[0].qty = r.message[0].qty + 1
             }else{
@@ -197,7 +197,7 @@ if (countProduct.stockReconcil.items.filter((item) => item.item_code == barcode.
             countProduct.stockReconcil.items.push(r.message)
             localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
             barcode.value = ''
-        }else{
+       
             dialog.open(ComSelectProductList, {
                 data:{"product_list":r.message},
                 onClose: (opt) => {
@@ -229,7 +229,7 @@ if (countProduct.stockReconcil.items.filter((item) => item.item_code == barcode.
                         },
                         modal: true
                     }});
-        }        
+               
         
         loadingQty.value = false
     }).catch(err => {
