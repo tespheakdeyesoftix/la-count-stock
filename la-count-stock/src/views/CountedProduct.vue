@@ -201,7 +201,7 @@ async function addItemOnCheck() {
                     const exist_item = countProduct.stockReconcil.items.find((item) => item.item_code == opt.data.product.item_code)
 
                     if (exist_item) {
-                        exist_item.qty = exist_item.qty + 1
+                        exist_item.qty = exist_item.qty
                         r.message.date = new Date()
                         dialog.open(ComUpdateProductQuantity, {
                             data: { "product": exist_item },
