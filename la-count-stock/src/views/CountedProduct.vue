@@ -15,7 +15,7 @@
 
         <br />
         <ul v-if="countProduct.stockReconcil" style="list-style-type: none;padding-left: 0;padding-top:10px;width: 100%;">
-            <li v-for="d in countProduct.stockReconcil.items?.sort((a, b) => new Date(b.date) - new Date(a.date))"
+            <li v-for="d in countProduct.stockReconcil.items?.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))"
                 style="margin-bottom: 8px;">
                 <div style="display: flex;gap:5px;width: 100%;justify-content: space-between;">
                     <div class="cart-item" style="width: 100%;justify-content: space-between;">
@@ -224,7 +224,7 @@ async function addItemOnCheck() {
                         localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
 
                     } else {
-                        opt.data.product.qty = 1
+                        opt.data.product.qty = 0
                         dialog.open(ComUpdateProductQuantity, {
                             data: { "product": opt.data.product },
                             props: {
@@ -239,13 +239,13 @@ async function addItemOnCheck() {
                                 modal: true,
 
                             },
-                            onClose: (opt) => {
-                                paused.value = false
-                            }
+                            // onClose: (opt) => {
+                            //     r.message.date = new Date()
+                            //     countProduct.stockReconcil.items.push(opt.data.product)
+                            //     localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
+                            // }
                         });
-                        r.message.date = new Date()
-                        countProduct.stockReconcil.items.push(opt.data.product)
-                        localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
+                       
                     }
                     barcode.value = ''
                 }
@@ -283,8 +283,9 @@ async function addItem() {
         alert('Item can not more than 20. please submit.')
         return
     }
-    const exist_item = countProduct.stockReconcil.items.find((item) => item.item_code == barcode.value.replace('!', ''))
-    if (countProduct.stockReconcil.items.filter((item) => item.item_code == barcode.value.replace('!', '')).length > 0) {
+    const exist_item = countProduct.stockReconcil.items.find((item) => item.item_code == barcode.value.replace('!', '') || item.alternate_item_code == barcode.value.replace('!', ''))
+    
+    if (countProduct.stockReconcil.items.filter((item) => item.item_code == barcode.value.replace('!', '')  || item.alternate_item_code == barcode.value.replace('!', '')).length > 0) {
         exist_item.qty = exist_item.qty + 1
         exist_item.date = new Date()
         localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
@@ -292,7 +293,6 @@ async function addItem() {
     } else {
         loadingQty.value = true;
         await postApi("api/method/erpnext.stock.doctype.stock_reconciliation.stock_reconciliation.get_item_qty_from_warehouse", {
-            // await postApi("api/method/epos_restaurant_2023.api.la_stock.get_item_qty_from_warehouse", {
             param: JSON.stringify({
                 warehouse: countProduct.stockReconcil.set_warehouse,
                 item_code: barcode.value.replace('!', ''),

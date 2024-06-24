@@ -41,10 +41,10 @@
   const product=ref(dialogRef.value.data.product)
   onMounted(()=>{
     const el = document.querySelector('.product-qty-wrapper input')
-    el.focus()
-  setTimeout(()=>{
-    el.select()
-  },200)
+      el.focus()
+    setTimeout(()=>{
+      el.select()
+    },200)
   })
   function save(){
     const exist_item = countProduct.stockReconcil.items.find((item) => item.item_code == product.value.item_code)

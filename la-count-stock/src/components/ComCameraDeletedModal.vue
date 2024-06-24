@@ -209,7 +209,7 @@ async function  searchProduct(barcode){
   
   if (countProdct.stockReconcil.items.filter((item) => item.item_code == barcode.replace('!', '')).length > 0) {
     const exist_item = JSON.parse(JSON.stringify(countProdct.stockReconcil.items.find((item) => item.item_code == barcode.replace('!', ''))))
-        exist_item.qty = exist_item.qty + 1
+        exist_item.qty = exist_item.qty || 0
         exist_item.date = new Date()
         
         dialog.open(ComUpdateProductQuantity, {
@@ -243,7 +243,7 @@ async function  searchProduct(barcode){
                 name: countProdct.stockReconcil.name
             })
         }).then(r => {
-            r.message.qty = r.message.qty + 1
+            r.message.qty = r.message.qty || 0
             r.message.date = new Date()
             dialog.open(ComUpdateProductQuantity, {
               data:{"product":r.message},

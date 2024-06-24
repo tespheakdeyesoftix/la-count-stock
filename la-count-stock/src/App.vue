@@ -16,7 +16,7 @@
 <script setup>
 import {inject} from 'vue'
 import DynamicDialog from 'primevue/dynamicdialog';
-
+import router from '@/router';
 import { RouterLink, RouterView } from 'vue-router'
 import ConfirmDialog from 'primevue/confirmdialog';
 import {onMounted, onUnmounted} from "vue"
@@ -46,15 +46,7 @@ onMounted(() => {
     window.addEventListener('message', actionClickHandler, false);
 })
 
-function sessionUser() {
-    let cookies = new URLSearchParams(document.cookie.split('; ').join('&'))
-    let _sessionUser = cookies.get('user_id')
-    if (_sessionUser === 'Guest') {
-      _sessionUser = null
-    }
-    console.log(_sessionUser)
-    return _sessionUser
-  }
+
 
 </script>
 <style scoped>
