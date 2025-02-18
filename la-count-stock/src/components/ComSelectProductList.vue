@@ -4,6 +4,7 @@
             <span class="text-500">Search Keyword >></span>  <span class="text-bold">{{keyword}}</span>
         </div>
     <div style="padding-top:8px;padding-bottom:8px;width:100%" class="flex">
+  
         <DataView :value="productList">
             <template #list="slotProps">
                <div @click="callback(item)" v-for="(item, index) in slotProps.items" class="item">
@@ -19,8 +20,10 @@
                 <div class="flex ">
                         <div class="mr-2">BOH: {{item.actual_qty}}</div>
                         <div>{{item.stock_uom}}</div>
+                        
                       
                 </div>
+                <div>Counted QTY:{{item.qty}}</div>
               
                </div>
             </template>
@@ -44,8 +47,9 @@ const views = ref([
     { name: 'By User', label: 'My Counted Item' }
 ]);
 function callback(item){
+    
     dialogRef.value.close({
-        product: item
+        product: item 
     });
 }
 

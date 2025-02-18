@@ -1,4 +1,5 @@
 <template >
+  {{ product }}
   <div>
     <table style="width: 100%;">
       <tr>

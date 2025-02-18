@@ -197,9 +197,12 @@ async function addItemOnCheck() {
                 "keyword": barcode
             },
             onClose: (opt) => {
-                if (opt.data) {
+    
+                if (opt.data.product) {
+                  
+                    
                     const exist_item = countProduct.stockReconcil.items.find((item) => item.item_code == opt.data.product.item_code)
-
+                    console.log(exist_item)
                     if (exist_item) {
                         exist_item.qty = exist_item.qty
                         r.message.date = new Date()
@@ -224,7 +227,7 @@ async function addItemOnCheck() {
                         localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
 
                     } else {
-                        opt.data.product.qty = 0
+                        opt.data.product.qty = opt.data.product.qty || 0
                         dialog.open(ComUpdateProductQuantity, {
                             data: { "product": opt.data.product },
                             props: {
@@ -239,11 +242,7 @@ async function addItemOnCheck() {
                                 modal: true,
 
                             },
-                            // onClose: (opt) => {
-                            //     r.message.date = new Date()
-                            //     countProduct.stockReconcil.items.push(opt.data.product)
-                            //     localStorage.setItem(route.params.name, JSON.stringify(countProduct.stockReconcil))
-                            // }
+                            
                         });
                        
                     }
